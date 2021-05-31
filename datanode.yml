@@ -1,0 +1,31 @@
+- hosts: datanode
+  tasks:
+  - name: datanode folder
+    file:
+           path: /dn
+           state: directory
+
+  - name: configuring hdfs-site file
+    blockinfile:
+           path: "/etc/hadoop/hdfs-site.xml"
+           insertafter: "<configuration>"
+           block:
+              <property>
+              <name>dfs.data.dir</name>
+              <value>/dn</value>
+              </property>
+
+
+  - name: configuring core-site file
+    blockinfile:
+          path: "/etc/hadoop/core-site.xml"
+          insertafter: "<configuration>"
+          block:
+             <property>
+             <name>fs.default.name</name>
+             <value>hdfs://192.168.43.45:9001</value>
+             </property>
+
+  - name: start dn
+    shell: "hadoop-daemon.sh start datanode"
+
