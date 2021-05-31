@@ -1,0 +1,36 @@
+- hosts: namenode
+  tasks:
+  - name: namenode folder
+    file:
+           path: /nn
+           state: directory
+         
+  - name: configuring hdfs-site file
+    blockinfile:
+           path: "/etc/hadoop/hdfs-site.xml"
+           insertafter: "<configuration>"
+           block:
+              <property>
+              <name>dfs.name.dir</name>
+              <value>/nn</value>
+              </property>
+      
+  - name: configuring core-site file
+    blockinfile:
+          path: "/etc/hadoop/core-site.xml"
+          insertafter: "<configuration>"
+          block: 
+             <property>
+             <name>fs.default.name</name>
+             <value>hdfs://192.168.43.45:9001</value>
+             </property>
+
+  - name: format nn
+    shell: "echo Y | hadoop namenode -format"
+  - name: stop firewall
+    service:
+            name: firewalld
+            state: stopped
+            enabled: false
+  - name: start nn
+    shell: "hadoop-daemon.sh start namenode"
