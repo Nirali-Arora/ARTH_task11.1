@@ -1,0 +1,17 @@
+- hosts: namenode,datanode
+  tasks:
+  - name: "copy hadoop software"
+    copy:
+      src: /root/hadoop-1.2.1-1.x86_64.rpm
+      dest: /root/
+    notify: "install hadoop software"
+  - name: "copy java jdk software"
+    copy:
+      src: /root/jdk-8u171-linux-x64.rpm
+      dest: /root/
+    notify: "install jdk software"
+  handlers:
+  - name: "install hadoop software"
+    shell: "rpm -ivh /root/hadoop-1.2.1-1.x86_64.rpm --force"
+  - name: "install jdk software"
+    shell: "rpm -ivh /root/jdk-8u171-linux-x64.rpm  --force" 
